@@ -1,0 +1,192 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Product Requirements Document: Cursor IDE - Social Network for Motorhome Owners & Digital Nomads
+
+**Date:** March 29, 2025
+**Version:** 1.2
+**Status:** Draft
+**Author:** Gemini AI
+
+## 1. Introduction
+
+This document outlines the technical product requirements for the Cursor IDE platform. It serves as a guide for the development team to understand the functionalities and technical specifications required for building the application.
+
+## 2. Platform Overview
+
+Cursor IDE will be a web application composed of a Next.js frontend and a Django backend. The frontend will handle user interface and interactions, while the backend will manage data, business logic, and integrations with external services. The platform will provide features for user registration, profile management, content sharing, route and place discovery, user following, and subscription management.
+
+## 3. Functional Requirements
+
+### 3.1 User Authentication and Authorization
+
+* **FR01: User Registration:**
+    * Users shall be able to register a new account using a unique username, a valid email address, and a password meeting defined security requirements.
+    * Users shall have the option to register using their Google account via OAuth 2.0.
+    * Upon successful registration, a user account record shall be created in the database.
+* **FR02: User Login:**
+    * Registered users shall be able to log in using their email address and password.
+    * Users who registered via Google shall be able to log in using their Google account.
+    * Upon successful login, a session shall be established.
+* **FR03: User Logout:**
+    * Logged-in users shall be able to securely log out of their session.
+* **FR04: Password Reset:**
+    * Users shall be able to initiate a password reset process via email.
+    * The system shall generate a secure, temporary token sent to the user's registered email address.
+    * Users shall be able to use the token to set a new password.
+
+### 3.2 User Profiles
+
+* **FR05: Profile Creation/Update:**
+    * Users shall be able to create and update their profile information, including:
+        * Username (read-only after creation)
+        * Bio (text field)
+        * Interests (selectable options)
+        * Profile Picture (image upload to Cloudflare R2)
+* **FR06: Vehicle Information Management:**
+    * Users shall be able to add, edit, and delete information about their vehicles, including:
+        * Vehicle Type (dropdown: Motorhome, RV - Class A, B, C, Truck Camper, Van, Other)
+        * Make (text field)
+        * Model (text field)
+        * Year (numeric)
+        * Length (numeric)
+        * Vehicle Image (image upload to Cloudflare R2)
+        * Nickname (optional, text field)
+* **FR07: Profile Viewing:**
+    * Users shall be able to view other users' profiles.
+
+### 3.3 Community Feed
+
+* **FR08: Post Creation:**
+    * Logged-in users shall be able to create new posts with text content (supporting Markdown).
+    * Users shall be able to upload one or more images and/or one video per post (stored on Cloudflare R2).
+    * Users shall be able to tag other users in their posts (using `@` mention).
+    * Users shall be able to add a location to their post (using Google Maps API for selection).
+* **FR09: Feed Display:**
+    * Users shall see a feed of posts from users they follow, ordered chronologically (initially).
+    * Posts shall display author information, content, media, timestamp, and location (if provided).
+* **FR10: Post Interaction:**
+    * Users shall be able to "like" posts.
+    * Users shall be able to add text comments to posts.
+    * Users shall be able to share posts (functionality to be defined - e.g., sharing a link).
+* **FR11: Hashtags:**
+    * The system shall recognize hashtags (`#`) in post content and make them clickable for searching related content.
+* **FR12: Reporting Content:**
+    * Users shall be able to report posts and comments for inappropriate content.
+
+### 3.4 Route Planning & Discovery
+
+* **FR13: Route Planning:**
+    * Users shall be able to plan routes using an embedded Google Maps interface.
+    * Users shall be able to add multiple waypoints to a route.
+    * Users shall be able to save planned routes with a title and description.
+* **FR14: Route Sharing:**
+    * Users shall be able to share their saved routes with other users (publicly or with specific users).
+    * Shared routes shall be viewable on a map within the platform.
+* **FR15: Route Discovery:**
+    * Users shall be able to discover routes shared by other users based on location, keywords in the title/description, or user.
+
+### 3.5 Place Tracking & Reviews
+
+* **FR16: Place Search:**
+    * Users shall be able to search for places of interest using Google Maps Places API.
+* **FR17: Place Visit Recording:**
+    * Users shall be able to record a visit to a place, including:
+        * Selecting the place via Google Maps integration.
+        * Specifying the date(s) of visit.
+        * Uploading photos and videos taken at the place (stored on Cloudflare R2).
+        * Adding tags (text-based).
+        * Writing a review (text field).
+        * Providing a rating (1-5 stars).
+        * Setting the privacy of the visit record (public or private).
+* **FR18: Place Display:**
+    * Publicly recorded place visits shall be visible on the user's profile.
+    * Individual place pages shall display user-submitted photos, videos, tags, reviews, and ratings.
+    * Google Maps information (name, address, etc.) for the place shall also be displayed.
+* **FR19: Place Discovery:**
+    * Users shall be able to discover places visited and reviewed by other users based on location, tags, or user.
+
+### 3.6 Following Other Users
+
+* **FR20: Follow Functionality:**
+    * Users shall be able to follow other users.
+    * A "Follow" button shall be available on user profiles.
+* **FR21: Unfollow Functionality:**
+    * Users shall be able to unfollow users they are currently following.
+* **FR22: Following List:**
+    * Users shall be able to view a list of users they are following.
+
+### 3.7 Subscription Management (Stripe Integration)
+
+* **FR23: Subscription Plan Definition:**
+    * The system shall support one or more subscription plans with defined features and pricing (details to be specified).
+* **FR24: Subscription Purchase:**
+    * Users shall be able to subscribe to a plan via secure payment processing using Stripe.
+* **FR25: Subscription Status:**
+    * The system shall track the subscription status of each user.
+* **FR26: Subscription Management Portal:**
+    * Users shall be able to access a portal to manage their subscription (view current plan, update payment information, cancel subscription).
+
+### 3.8 Search Functionality
+
+* **FR27: User Search:**
+    * Users shall be able to search for other users by username.
+* **FR28: Content Search:**
+    * Users shall be able to search for posts and places based on keywords in their content or associated tags.
+
+### 3.9 Notifications
+
+* **FR29: Notification Generation:**
+    * The system shall generate notifications for events such as:
+        * New followers.
+        * Likes on user's posts.
+        * Comments on user's posts.
+        * Tags of the user in other users' posts.
+* **FR30: Notification Delivery:**
+    * Notifications shall be displayed to users within the platform (e.g., a notification bell).
+    * (Future consideration: Email notifications for certain events).
+* **FR31: Notification Settings:**
+    * Users shall be able to configure their notification preferences.
+
+### 3.10 User Reporting & Moderation
+
+* **FR32: Reporting Mechanism:**
+    * Users shall be able to report posts, comments, and user profiles.
+* **FR33: Moderation Interface (Admin):**
+    * An administrative interface shall be provided for moderators to review reported content and take actions (e.g., delete content, suspend users).
+
+## 4. Non-Functional Requirements
+
+* **NF01: Performance:**
+    * The platform shall have acceptable page load times (target: under 3 seconds for most pages).
+    * API response times shall be under 500 milliseconds for most requests.
+* **NF02: Scalability:**
+    * The system architecture shall be scalable to handle a growing number of users and data.
+* **NF03: Security:**
+    * All sensitive data shall be encrypted at rest and in transit.
+    * The platform shall be protected against common web vulnerabilities (CSRF, XSS, etc.).
+    * User authentication and authorization shall be secure.
+* **NF04: Usability:**
+    * The platform shall be intuitive and easy to use for the target audience.
+    * The user interface shall be responsive and accessible on various devices (desktop and mobile).
+* **NF05: Reliability:**
+    * The platform shall be reliable and available with minimal downtime.
+
+## 5. Technical Requirements (Summary)
+
+* **Frontend:** Next.js, Shadcn UI, Tailwind CSS
+* **Backend:** Django, Django REST Framework, Python
+* **Database:** PostgreSQL
+* **Mapping:** Google Maps Platform
+* **Payments:** Stripe
+* **Storage:** Cloudflare R2
+
+## 6. Release Criteria (Technical Focus)
+
+* All functional requirements outlined in Section 3 are implemented and tested.
+* All core integrations (Google Maps, Stripe, Cloudflare R2) are functional and tested.
+* The platform meets the defined non-functional requirements for performance and security.
+* Unit and integration tests have been written and passed for critical components.
+* The deployment process is documented and tested.

@@ -1,0 +1,97 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Technical Requirements Document: Cursor IDE - Social Network for Motorhome Owners & Digital Nomads
+
+**Date:** March 29, 2025
+**Version:** 1.1
+**Status:** Draft
+**Author:** Gemini AI
+
+## 1. Introduction
+
+This document outlines the technical requirements for the Cursor IDE platform, detailing the technologies, architecture, and infrastructure considerations for the development team.
+
+## 2. Technology Stack
+
+* **Frontend:**
+    * Framework: React (JavaScript library for building user interfaces)
+    * UI Library: Shadcn UI (for building reusable UI components with Tailwind CSS)
+    * State Management: React Context API (for initial MVP, may evolve to Zustand or Recoil for more complex state management)
+    * Styling: Tailwind CSS (utility-first CSS framework)
+* **Backend:**
+    * Framework: Django (Python web framework)
+    * Language: Python
+    * Database: PostgreSQL (Relational database for structured data)
+    * API Development: Django REST Framework (for building RESTful APIs)
+* **Mapping & Location:**
+    * Google Maps Platform (JavaScript API for map display, Directions API for route planning, Places API for place search and details)
+* **Payments:**
+    * Stripe (for handling subscription payments and billing)
+* **Storage:**
+    * Cloudflare R2 (for storing user-uploaded media files: profile pictures, post images/videos, place photos)
+* **Authentication:**
+    * Django's built-in authentication system for email/password login.
+    * Integration with Google Sign-In via appropriate Django libraries (e.g., `django-allauth`).
+* **Notifications:**
+    * (To be decided - potentially Django Channels for real-time notifications or a third-party notification service)
+* **Caching:**
+    * Redis (for caching frequently accessed data to improve performance)
+* **Task Queue:**
+    * Celery (for handling asynchronous tasks, such as sending emails or processing large uploads)
+* **Deployment:**
+    * (To be decided - potentially a cloud platform like AWS, Google Cloud Platform, or DigitalOcean, configured for Django and a React frontend)
+
+## 3. Architecture
+
+* **Frontend (React):** Will act as a Single Page Application (SPA) consuming APIs from the Django backend. It will handle user interface, user interactions, and rendering in the user's browser.
+* **Backend (Django):** Will be responsible for:
+    * Handling user authentication and authorization.
+    * Managing data models and database interactions (PostgreSQL).
+    * Implementing business logic and API endpoints using Django REST Framework.
+    * Processing payments via Stripe.
+    * Interacting with Google Maps APIs.
+    * Managing file uploads and storage on Cloudflare R2.
+    * Handling notifications and background tasks.
+* **API Communication:** The frontend and backend will communicate using RESTful APIs over HTTPS.
+
+## 4. Infrastructure Considerations
+
+* **Database Server:** Provisioning and management of a PostgreSQL database instance.
+* **Backend Server(s):** Deployment environment for the Django application (web servers, application servers).
+* **Frontend Hosting:** Platform for hosting the static assets of the React application (e.g., Netlify, Vercel, AWS S3 with CloudFront, or similar).
+* **Cloudflare R2 Configuration:** Setting up and managing buckets for media storage.
+* **Stripe Integration:** Securely implementing Stripe API keys and webhooks.
+* **Google Maps API Keys:** Obtaining and securing necessary API keys.
+* **DNS Management:** Configuring DNS records for the platform domain.
+* **SSL Certificates:** Implementing HTTPS for secure communication.
+* **Monitoring and Logging:** Setting up tools for monitoring application performance, server health, and error logging.
+* **Scalability:** The infrastructure should be designed to allow for horizontal scaling of backend and frontend components as the user base grows.
+
+## 5. Security Requirements
+
+* **Data Encryption:** Sensitive data (passwords, payment information) must be encrypted at rest and in transit.
+* **Authentication and Authorization:** Securely authenticate users and authorize access to resources based on their roles and permissions.
+* **Protection Against Common Web Vulnerabilities:** Implement measures to prevent CSRF, XSS, SQL injection, and other common web security threats.
+* **Regular Security Audits:** Conduct periodic security assessments and penetration testing.
+* **Secure API Design:** Follow security best practices when designing and implementing APIs.
+* **Compliance:** Adhere to relevant data privacy regulations.
+
+## 6. Performance Requirements
+
+* **Page Load Times:** Ensure fast loading times for all pages and resources.
+* **API Response Times:** APIs should respond quickly to user requests.
+* **Scalability:** The platform should be able to handle a growing number of users and data without significant performance degradation.
+* **Optimize Database Queries:** Write efficient database queries to ensure optimal performance.
+* **Utilize Caching:** Implement caching mechanisms to reduce database load and improve response times.
+
+## 7. Deployment Process
+
+* Establish a clear and repeatable deployment process.
+* Utilize version control (e.g., Git) for code management.
+* Implement CI/CD (Continuous Integration/Continuous Deployment) pipelines for automated building, testing, and deployment of both the frontend and backend.
+* Have rollback strategies in place in case of deployment failures.
+
+These documents should now accurately reflect the technology stack with React for the frontend. Let me know if there are any other adjustments needed!

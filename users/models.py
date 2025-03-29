@@ -61,3 +61,23 @@ class Vehicle(models.Model):
         
     def __str__(self):
         return f"{self.year} {self.make} {self.model} ({self.nickname})" if self.nickname else f"{self.year} {self.make} {self.model}"
+
+class VehicleMedia(models.Model):
+    """Model for vehicle photos and videos."""
+    MEDIA_TYPES = [
+        ('PHOTO', 'Photo'),
+        ('VIDEO', 'Video'),
+    ]
+    
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='media')
+    media_type = models.CharField(max_length=5, choices=MEDIA_TYPES)
+    file = models.FileField(upload_to='vehicle_media/')
+    caption = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name_plural = 'Vehicle media'
+        
+    def __str__(self):
+        return f"{self.get_media_type_display()} for {self.vehicle}"

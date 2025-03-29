@@ -1,0 +1,309 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Header -->
+<header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div class="container flex h-14 max-w-screen-2xl items-center">
+        <div class="mr-4 flex">
+            <a href="/" class="mr-6 flex items-center space-x-2">
+                <img src="{% static 'images/logo.svg' %}" alt="Tip2Trip" class="h-6 w-6" />
+                <span class="hidden font-bold sm:inline-block">Tip2Trip</span>
+            </a>
+            <nav class="flex items-center space-x-6 text-sm font-medium">
+                <a href="{% url 'core:feed' %}" class="transition-colors hover:text-foreground/80 text-foreground/60">Feed</a>
+                <a href="{% url 'users:profile_settings' %}" class="transition-colors hover:text-foreground/80 text-foreground">Settings</a>
+            </nav>
+        </div>
+        <div class="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+            <div class="w-full flex-1 md:w-auto md:flex-none">
+                <button class="inline-flex items-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 relative w-full justify-between md:w-40 text-sm">
+                    <span>Search...</span>
+                    <kbd class="pointer-events-none absolute right-1.5 top-1.5 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                        <span class="text-xs">⌘</span>K
+                    </kbd>
+                </button>
+            </div>
+            <nav class="flex items-center">
+                <a href="{% url 'users:profile' user.username %}" class="relative inline-flex items-center justify-center">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.get_full_name }}" class="h-8 w-8 rounded-full">
+                    {% else %}
+                        <div class="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+                            <span class="text-secondary-foreground text-sm font-medium">
+                                {{ user.get_initials }}
+                            </span>
+                        </div>
+                    {% endif %}
+                </a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container max-w-screen-2xl py-6">
+    <!-- Tabs -->
+    <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+        <aside class="lg:w-1/5">
+            <nav class="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+                <a href="#profile" class="inline-flex items-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-4 py-2 w-full justify-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Profile
+                </a>
+                <a href="#vehicles" class="inline-flex items-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-full justify-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
+                    Vehicles
+                </a>
+                <a href="#security" class="inline-flex items-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-full justify-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Security
+                </a>
+            </nav>
+        </aside>
+        <div class="flex-1 lg:max-w-3xl">
+            <!-- Profile Section -->
+            <div id="profile" class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium">Profile</h3>
+                        <p class="text-sm text-muted-foreground">
+                            Manage your profile information and settings
+                        </p>
+                    </div>
+                </div>
+                <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <form method="POST" enctype="multipart/form-data" class="space-y-6 p-6">
+                        {% csrf_token %}
+                        {% if messages %}
+                        <div class="rounded-lg bg-green-50 p-4 text-sm text-green-800">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Profile Picture -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Profile Picture</label>
+                            <div class="flex items-center space-x-4">
+                                {% if user.profile_picture %}
+                                    <img src="{{ user.profile_picture.url }}" alt="Profile picture" class="h-16 w-16 rounded-full">
+                                {% else %}
+                                    <div class="h-16 w-16 rounded-full bg-secondary flex items-center justify-center">
+                                        <span class="text-secondary-foreground text-xl font-medium">
+                                            {{ user.get_initials }}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                                <div class="flex-1">
+                                    {{ form.profile_picture }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Name -->
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
+                            {{ form.email }}
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Bio</label>
+                            {{ form.bio }}
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Vehicles Section -->
+            <div id="vehicles" class="space-y-6 mt-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium">My Vehicles</h3>
+                        <p class="text-sm text-muted-foreground">
+                            Manage your vehicles and their media
+                        </p>
+                    </div>
+                    <a href="{% url 'users:vehicle_create' %}" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                        Add Vehicle
+                    </a>
+                </div>
+
+                {% if vehicles %}
+                    {% for vehicle in vehicles %}
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div class="p-6 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-lg font-medium">
+                                        {% if vehicle.nickname %}
+                                            {{ vehicle.nickname }} ({{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }})
+                                        {% else %}
+                                            {{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }}
+                                        {% endif %}
+                                    </h4>
+                                    <p class="text-sm text-muted-foreground">{{ vehicle.get_vehicle_type_display }} • {{ vehicle.length }} feet</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <a href="{% url 'users:vehicle_edit' vehicle.pk %}" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                                        Edit
+                                    </a>
+                                    <form method="POST" action="{% url 'users:vehicle_delete' vehicle.pk %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-9 px-4 py-2" onclick="return confirm('Are you sure you want to delete this vehicle?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {% if vehicle.image %}
+                            <div class="aspect-video overflow-hidden rounded-lg">
+                                <img src="{{ vehicle.image.url }}" alt="{{ vehicle }}" class="w-full h-full object-cover">
+                            </div>
+                            {% endif %}
+
+                            {% with media=vehicle.media.all %}
+                            {% if media %}
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <h5 class="text-sm font-medium">Photos & Videos</h5>
+                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                                        Add Media
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    {% for item in media %}
+                                    <div class="group relative aspect-square overflow-hidden rounded-lg bg-muted">
+                                        {% if item.media_type == 'PHOTO' %}
+                                        <img src="{{ item.file.url }}" 
+                                             alt="{{ item.caption|default:vehicle }}" 
+                                             class="h-full w-full object-cover transition-all hover:scale-105 cursor-pointer"
+                                             onclick="openLightbox('{{ item.file.url }}', '{{ item.media_type }}', '{{ item.caption|default:'' }}')" />
+                                        {% else %}
+                                        <video src="{{ item.file.url }}" 
+                                               class="h-full w-full object-cover cursor-pointer"
+                                               onclick="openLightbox('{{ item.file.url }}', '{{ item.media_type }}', '{{ item.caption|default:'' }}')"
+                                               controls>
+                                        </video>
+                                        {% endif %}
+                                        <div class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                                            <form method="POST" action="{% url 'users:vehicle_media_delete' vehicle.pk item.pk %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-9 px-4 py-2" onclick="return confirm('Are you sure you want to delete this media?')">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                        {% if item.caption %}
+                                        <div class="absolute bottom-0 left-0 right-0 bg-black/60 p-2">
+                                            <p class="text-sm text-white truncate">{{ item.caption }}</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div class="p-6 text-center">
+                        <p class="text-sm text-muted-foreground">No vehicles added yet.</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
+    <div class="fixed inset-0 flex items-center justify-center">
+        <div class="relative max-w-4xl w-full mx-4">
+            <button onclick="closeLightbox()" class="absolute -top-12 right-0 text-white hover:text-gray-300 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div id="lightbox-content" class="rounded-lg overflow-hidden bg-black"></div>
+            <p id="lightbox-caption" class="text-white text-center mt-4 text-sm"></p>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function openLightbox(url, type, caption) {
+    const lightbox = document.getElementById('lightbox');
+    const content = document.getElementById('lightbox-content');
+    const captionEl = document.getElementById('lightbox-caption');
+    
+    content.innerHTML = '';
+    if (type === 'PHOTO') {
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'w-full h-auto';
+        content.appendChild(img);
+    } else {
+        const video = document.createElement('video');
+        video.src = url;
+        video.controls = true;
+        video.className = 'w-full h-auto';
+        content.appendChild(video);
+    }
+    
+    captionEl.textContent = caption;
+    lightbox.classList.remove('hidden');
+    
+    // Enable escape key to close lightbox
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    const content = document.getElementById('lightbox-content');
+    const captionEl = document.getElementById('lightbox-caption');
+    
+    content.innerHTML = '';
+    captionEl.textContent = '';
+    lightbox.classList.add('hidden');
+}
+
+// Close lightbox when clicking outside the content
+document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLightbox();
+    }
+});
+</script>
+{% endblock %}
+{% endblock %} 

@@ -42,5 +42,5 @@ class FeedView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['posts'] = Post.objects.select_related('author').prefetch_related('likes', 'comments').all()
+        context['posts'] = Post.objects.select_related('author').prefetch_related('likes', 'comments').order_by('-created_at').all()
         return context

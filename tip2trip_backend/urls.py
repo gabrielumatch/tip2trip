@@ -20,11 +20,19 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', include('core.urls')),  # Include core URLs at root
-    path('admin/', admin.site.urls),
+    # Web Interface URLs
+    path('', include('core.urls')),  # Core URLs at root
+    path('admin/', admin.site.urls),  # Admin interface
+    path('users/', include('users.urls')),  # User web interface URLs
+    path('posts/', include('posts.urls')),  # Posts web interface URLs
+    
     # API URLs
-    path('api/users/', include('users.urls')),
     path('api/places/', include('places.urls')),
     path('api/routes/', include('routes.urls')),
-    path('api/posts/', include('posts.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/posts/', include('posts.urls', namespace='api_posts')),  # API version of posts URLs
+    path('api/users/', include('users.urls', namespace='api_users')),  # API version of user URLs
+]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

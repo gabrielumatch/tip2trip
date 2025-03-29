@@ -1,0 +1,175 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Header -->
+<header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div class="container flex h-14 max-w-screen-2xl items-center">
+        <div class="mr-4 flex">
+            <a href="/" class="mr-6 flex items-center space-x-2">
+                <img src="{% static 'images/logo.svg' %}" alt="Tip2Trip" class="h-6 w-6" />
+                <span class="hidden font-bold sm:inline-block">Tip2Trip</span>
+            </a>
+            <nav class="flex items-center space-x-6 text-sm font-medium">
+                <a href="{% url 'core:feed' %}" class="transition-colors hover:text-foreground/80 text-foreground/60">Feed</a>
+                {% if user == profile_user %}
+                    <a href="{% url 'users:profile_settings' %}" class="transition-colors hover:text-foreground/80 text-foreground/60">Settings</a>
+                {% endif %}
+            </nav>
+        </div>
+        <div class="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+            <div class="w-full flex-1 md:w-auto md:flex-none">
+                <button class="inline-flex items-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 relative w-full justify-between md:w-40 text-sm">
+                    <span>Search...</span>
+                    <kbd class="pointer-events-none absolute right-1.5 top-1.5 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                        <span class="text-xs">⌘</span>K
+                    </kbd>
+                </button>
+            </div>
+            <nav class="flex items-center">
+                <a href="{% url 'users:profile' user.username %}" class="relative inline-flex items-center justify-center">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.get_full_name }}" class="h-8 w-8 rounded-full">
+                    {% else %}
+                        <div class="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+                            <span class="text-secondary-foreground text-sm font-medium">
+                                {{ user.get_initials }}
+                            </span>
+                        </div>
+                    {% endif %}
+                </a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container max-w-screen-2xl py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Profile Info -->
+        <div class="lg:col-span-1">
+            <div class="bg-white shadow rounded-lg p-6">
+                <div class="flex flex-col items-center">
+                    {% if profile_user.profile_picture %}
+                        <img src="{{ profile_user.profile_picture.url }}" alt="{{ profile_user.get_full_name }}" class="h-24 w-24 rounded-full">
+                    {% else %}
+                        <div class="h-24 w-24 rounded-full bg-secondary flex items-center justify-center">
+                            <span class="text-secondary-foreground text-2xl font-medium">
+                                {{ profile_user.get_initials }}
+                            </span>
+                        </div>
+                    {% endif %}
+                    <h2 class="mt-4 text-xl font-semibold">{{ profile_user.get_full_name }}</h2>
+                    <p class="text-gray-500">@{{ profile_user.username }}</p>
+                    {% if profile_user.bio %}
+                        <p class="mt-4 text-gray-700">{{ profile_user.bio }}</p>
+                    {% endif %}
+                </div>
+                <div class="mt-6 border-t pt-6">
+                    <div class="flex justify-around text-center">
+                        <div>
+                            <span class="block font-semibold">{{ profile_user.posts.count }}</span>
+                            <span class="text-gray-500">Posts</span>
+                        </div>
+                        <div>
+                            <span class="block font-semibold">{{ profile_user.followers.count }}</span>
+                            <span class="text-gray-500">Followers</span>
+                        </div>
+                        <div>
+                            <span class="block font-semibold">{{ profile_user.following.count }}</span>
+                            <span class="text-gray-500">Following</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Posts and Vehicles -->
+        <div class="lg:col-span-2">
+            <!-- Posts -->
+            <div class="space-y-6">
+                {% for post in posts %}
+                <div class="bg-white shadow rounded-lg" data-post-id="{{ post.id }}">
+                    <div class="p-6">
+                        <div class="flex space-x-3">
+                            <div class="flex-shrink-0">
+                                {% if post.author.profile_picture %}
+                                    <img src="{{ post.author.profile_picture.url }}" alt="{{ post.author.get_full_name }}" class="h-10 w-10 rounded-full">
+                                {% else %}
+                                    <div class="h-10 w-10 rounded-full bg-gray-300"></div>
+                                {% endif %}
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-medium text-gray-900">{{ post.author.username }}</p>
+                                <p class="text-sm text-gray-500">{{ post.created_at|timesince }} ago</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-gray-800">{{ post.content }}</p>
+                            {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="Post image" class="mt-4 rounded-lg w-full h-auto object-cover">
+                            {% endif %}
+                            {% if post.location %}
+                            <p class="mt-2 text-sm text-gray-500">
+                                <svg class="inline h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                </svg>
+                                {{ post.location }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        <div class="mt-4 flex space-x-4">
+                            <button type="button" class="like-button text-gray-500 hover:text-gray-600 {% if post in user.liked_posts.all %}text-red-500{% endif %}"
+                                    data-post-id="{{ post.id }}">
+                                <svg class="h-5 w-5" fill="{% if post in user.liked_posts.all %}currentColor{% else %}none{% endif %}" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                                <span class="likes-count ml-1">{{ post.like_count }}</span>
+                            </button>
+                            <button type="button" class="comment-button text-gray-500 hover:text-gray-600">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                                <span class="comments-count ml-1">{{ post.comments.count }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Vehicles -->
+            {% if vehicles %}
+            <div class="mt-8">
+                <h3 class="text-lg font-medium mb-4">Vehicles</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for vehicle in vehicles %}
+                    <div class="bg-white shadow rounded-lg p-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-lg font-medium">{{ vehicle.nickname|default:vehicle.make }}</h4>
+                            {% if user == profile_user %}
+                            <a href="{% url 'users:vehicle_edit' vehicle.pk %}" class="text-sm text-indigo-600 hover:text-indigo-500">Edit</a>
+                            {% endif %}
+                        </div>
+                        <p class="text-gray-600">{{ vehicle.make }} {{ vehicle.model }} {{ vehicle.year }}</p>
+                        {% if vehicle.media.exists %}
+                        <div class="mt-4 grid grid-cols-2 gap-2">
+                            {% for media in vehicle.media.all %}
+                            <div class="relative aspect-square">
+                                {% if media.media_type == 'PHOTO' %}
+                                <img src="{{ media.file.url }}" alt="{{ media.caption|default:'Vehicle photo' }}" class="rounded-lg object-cover w-full h-full">
+                                {% else %}
+                                <video src="{{ media.file.url }}" class="rounded-lg object-cover w-full h-full" controls></video>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 
